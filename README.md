@@ -62,3 +62,4 @@ Frontend Web Application runs on: `http://localhost:3000`
 - 👨‍🏫 **Faculty**: Industry training, faculty internships, research collaboration, student mentorship.
 - 🏛️ **Institution**: Skill analytics, placement intelligence, skill gaps, company participation.
 - ⚙️ **Admin**: Verification management, user RBAC, audit logging, system settings.
+# Skillnexa
