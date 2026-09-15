@@ -1,0 +1,30 @@
+{
+  "name": "skillnexa-platform",
+  "version": "1.0.0",
+  "description": "AI-Powered Academia-Industry Collaboration & Talent Intelligence Platform",
+  "main": "backend/server.ts",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:ai": "npm --prefix ai-service run dev",
+    "install:all": "npm install && npm --prefix backend install && npm --prefix frontend install",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build"
+  },
+  "keywords": [
+    "academia",
+    "industry",
+    "collaboration",
+    "talent-intelligence",
+    "skill-mapping",
+    "internship",
+    "placement",
+    "ai"
+  ],
+  "author": "SkillNexa Team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
