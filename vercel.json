@@ -13,14 +13,14 @@
       "use": "@vercel/node"
     },
     {
-      "src": "ai-service/app/main.py",
+      "src": "api/ai.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/ai/(.*)",
-      "dest": "ai-service/app/main.py"
+      "dest": "api/ai.py"
     },
     {
       "src": "/api/(.*)",

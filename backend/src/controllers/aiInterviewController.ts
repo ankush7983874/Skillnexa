@@ -6,7 +6,12 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
 
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+const getAiServiceUrl = () => {
+  if (process.env.AI_SERVICE_URL) return process.env.AI_SERVICE_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}/api/ai`;
+  return 'http://localhost:8000';
+};
+const AI_SERVICE_URL = getAiServiceUrl();
 
 async function getStudentProfile(userId: string) {
   const student = await Student.findOne({ user: userId });

@@ -15,7 +15,12 @@ import fs from 'fs';
 import path from 'path';
 import FormData from 'form-data';
 
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+const getAiServiceUrl = () => {
+  if (process.env.AI_SERVICE_URL) return process.env.AI_SERVICE_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}/api/ai`;
+  return 'http://localhost:8000';
+};
+const AI_SERVICE_URL = getAiServiceUrl();
 
 // ─────────────────────────────────────────────────
 // Phase 1–9 (PRESERVED — do not remove)
