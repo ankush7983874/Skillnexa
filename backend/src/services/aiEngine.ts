@@ -153,6 +153,22 @@ export const nativeAIEngine = {
     };
   },
 
+  getWeeklyPlan: (studentProfile: any, targetRole: string = 'Software Engineer', hoursPerDay: number = 2) => {
+    return {
+      targetRole,
+      hoursPerDay,
+      weeklySchedule: [
+        { day: 'Monday', focus: 'Data Structures & Algorithmic Problem Solving', durationHours: hoursPerDay, tasks: ['LeetCode 2 Medium Problems', 'Review Time Complexity'] },
+        { day: 'Tuesday', focus: 'System Design & REST API Architecture', durationHours: hoursPerDay, tasks: ['Study Indexing & Caching', 'Build Express Route Endpoint'] },
+        { day: 'Wednesday', focus: 'Frontend Framework & State Management', durationHours: hoursPerDay, tasks: ['React Hooks Refactoring', 'Tailwind Layout Styling'] },
+        { day: 'Thursday', focus: 'Database Queries & ORM Optimization', durationHours: hoursPerDay, tasks: ['Write Aggregation Pipeline', 'Test Mongo Indexing'] },
+        { day: 'Friday', focus: 'AI Mock Interview & Communication', durationHours: hoursPerDay, tasks: ['Conduct 1 Technical Session', 'Record STAR Behavioral Answer'] },
+        { day: 'Saturday', focus: 'Full-Stack Project Sprint', durationHours: hoursPerDay * 2, tasks: ['Push Code to GitHub', 'Deploy Feature Branch'] },
+        { day: 'Sunday', focus: 'Weekly Review & Knowledge Assessment', durationHours: 1, tasks: ['SkillNexa Quiz Assessment', 'Plan Next Week Goals'] },
+      ],
+    };
+  },
+
   // 4. Resume Analysis & ATS Optimization
   analyzeResume: (studentProfile: any, targetRole: string = 'Software Engineer') => {
     const skills = (studentProfile.skills || []).map((s: any) => typeof s === 'string' ? s : s.name);
@@ -354,6 +370,237 @@ export const nativeAIEngine = {
         'Consider adding explicit return type annotations for functions.',
         'Replace magic numbers with named constants.',
       ],
+    };
+  },
+
+  // 7. Skill Forecast
+  getSkillForecast: () => {
+    return {
+      highDemandSkills: [
+        { name: 'Generative AI & LLMs', category: 'Artificial Intelligence', growthRate: '+42%', jobPostingsCount: 1250 },
+        { name: 'React & TypeScript', category: 'Frontend Web', growthRate: '+28%', jobPostingsCount: 3400 },
+        { name: 'Node.js & Microservices', category: 'Backend Systems', growthRate: '+31%', jobPostingsCount: 2900 },
+        { name: 'Kubernetes & Cloud DevOps', category: 'Infrastructure', growthRate: '+35%', jobPostingsCount: 1850 },
+        { name: 'Cybersecurity Fundamentals', category: 'Security', growthRate: '+24%', jobPostingsCount: 1400 },
+      ],
+      emergingDomains: ['Full Stack AI Applications', 'Vector Databases (Pinecone/Milvus)', 'Cloud Native Security'],
+      marketInsights: 'High demand for developers who combine core Data Structures & Algorithms with modern cloud frameworks.',
+    };
+  },
+
+  // 8. Career Predictor & Path Analysis
+  getCareerPredictor: (studentProfile: any, targetRole: string = 'Software Engineer') => {
+    const readiness = nativeAIEngine.getCareerReadiness(studentProfile, targetRole);
+    return {
+      ...readiness,
+      predictedSalaryRange: '$75,000 - $110,000 / annum',
+      careerTrajectories: [
+        { title: 'Junior Software Engineer', timelineMonths: '0 - 18' },
+        { title: 'Mid-Level Full-Stack Developer', timelineMonths: '18 - 36' },
+        { title: 'Senior Systems Architect', timelineMonths: '36+' },
+      ],
+      growthPotentialScore: 92,
+    };
+  },
+
+  // 9. Skill Coach
+  getSkillCoach: (studentProfile: any, targetSkill: string = 'React', currentLevel: string = 'Beginner') => {
+    return {
+      targetSkill,
+      currentLevel,
+      coachingPlan: [
+        { step: 1, title: `Foundations of ${targetSkill}`, durationDays: 5, status: 'In Progress' },
+        { step: 2, title: `Hands-on Project with ${targetSkill}`, durationDays: 7, status: 'Pending' },
+        { step: 3, title: `Optimization & Best Practices in ${targetSkill}`, durationDays: 4, status: 'Pending' },
+      ],
+      recommendedPractices: [
+        `Build 2 small applications emphasizing state management in ${targetSkill}.`,
+        `Solve 5 quiz challenges on SkillNexa Arena focusing on ${targetSkill}.`,
+      ],
+    };
+  },
+
+  // 10. DSA Coach
+  getDSACoach: (studentProfile: any, targetRole: string = 'Software Engineer') => {
+    return {
+      targetRole,
+      overallMastery: 72,
+      curatedTopics: [
+        { topic: 'Arrays & Hashing', masteryPct: 88, status: 'Mastered' },
+        { topic: 'Two Pointers & Sliding Window', masteryPct: 75, status: 'Intermediate' },
+        { topic: 'Trees & Graphs (BFS/DFS)', masteryPct: 60, status: 'Needs Practice' },
+        { topic: 'Dynamic Programming', masteryPct: 45, status: 'Focus Priority' },
+      ],
+      dailyProblemRecommendation: {
+        title: 'Longest Substring Without Repeating Characters',
+        difficulty: 'Medium',
+        pattern: 'Sliding Window',
+      },
+    };
+  },
+
+  // 11. Interview Coach
+  getInterviewCoach: (studentProfile: any, targetRole: string = 'Software Engineer') => {
+    return {
+      targetRole,
+      prepPlan: {
+        technicalFocus: ['System Design', 'Core Language Paradigms', 'Database Queries'],
+        behavioralPrep: ['STAR Method Structure', 'Conflict Resolution Examples'],
+        mockSessionsRecommended: 3,
+      },
+    };
+  },
+
+  // 12. Resume Optimizer
+  getResumeOptimizer: (studentProfile: any, targetRole: string = 'Software Engineer') => {
+    const baseAnalysis = nativeAIEngine.analyzeResume(studentProfile, targetRole);
+    return {
+      ...baseAnalysis,
+      optimizedSummary: `Result-driven ${targetRole} with hands-on experience developing scalable applications and optimizing database queries.`,
+      recommendedImpactBullets: [
+        `Architected REST APIs handling over 10,000 daily requests with 99.9% uptime.`,
+        `Improved database query execution time by 40% through indexing and query caching.`,
+      ],
+    };
+  },
+
+  // 13. Project Advisor
+  getProjectAdvisor: (studentProfile: any, targetRole: string = 'Software Engineer') => {
+    return {
+      targetRole,
+      recommendedProjects: [
+        {
+          title: 'AI-Powered Smart Career Portal',
+          techStack: ['Node.js', 'Express', 'React', 'MongoDB', 'TypeScript'],
+          difficulty: 'Advanced',
+          impactRating: 'High (Placement Ready)',
+          keyFeatures: ['Role-based access control', 'AI analytics dashboard', 'Proctored assessments'],
+        },
+        {
+          title: 'Real-Time Collaborative Code Editor',
+          techStack: ['WebSockets', 'React', 'Node.js', 'Redis'],
+          difficulty: 'Intermediate',
+          impactRating: 'High',
+          keyFeatures: ['Live cursor syncing', 'Code execution engine', 'Syntax highlighting'],
+        },
+      ],
+    };
+  },
+
+  // 14. Learning Materials
+  getLearningMaterials: (skill: string = 'Java', level: string = 'Beginner') => {
+    return {
+      skill,
+      level,
+      materials: [
+        { title: `Complete ${skill} Masterclass 2026`, type: 'Video Course', link: 'https://skillnexa.com/learn', duration: '12 Hours' },
+        { title: `Official ${skill} Documentation & Reference`, type: 'Documentation', link: 'https://docs.oracle.com', duration: 'Self-paced' },
+        { title: `${skill} Coding Challenge Sheet`, type: 'Practice', link: 'https://skillnexa.com/arena', duration: '20 Problems' },
+      ],
+    };
+  },
+
+  // 15. Performance Predictor
+  getPerformancePredictor: (studentProfile: any, targetScore: number = 85) => {
+    return {
+      targetScore,
+      predictedScore: Math.min(98, (studentProfile.cgpa || 7) * 10 + 15),
+      confidenceInterval: '90%',
+      growthTrajectory: 'Steep Upward',
+    };
+  },
+
+  // 16. Placement Readiness
+  getPlacementReadiness: (studentProfile: any, targetCompanyType: string = 'Product') => {
+    const readiness = nativeAIEngine.getCareerReadiness(studentProfile);
+    return {
+      ...readiness,
+      targetCompanyType,
+      tierFit: readiness.careerReadinessScore > 75 ? 'Tier 1 Product Companies' : 'Service & IT Services Tier',
+    };
+  },
+
+  // 17. Job Explainability
+  getJobExplainability: (studentProfile: any, job: any) => {
+    const studentSkills = (studentProfile.skills || []).map((s: any) => (typeof s === 'string' ? s : s.name).toLowerCase());
+    const required = (job.requiredSkills || []).map((s: string) => s.toLowerCase());
+    const matched = required.filter((r: string) => studentSkills.some((s: string) => s.includes(r)));
+
+    return {
+      jobTitle: job.title,
+      overallFitScore: Math.round((matched.length / Math.max(1, required.length)) * 100),
+      matchBreakdown: {
+        skillsMatched: matched,
+        skillsMissing: required.filter((r: string) => !matched.includes(r)),
+        academicEligibility: (studentProfile.cgpa || 7) >= (job.minCgpa || 0),
+      },
+      whyYouMatch: `You possess ${matched.length} out of ${required.length} required core skills for this role.`,
+    };
+  },
+
+  // 18. What-If Simulator
+  getWhatIf: (studentProfile: any, scenario: string, changes: any[]) => {
+    const current = nativeAIEngine.getCareerReadiness(studentProfile);
+    const boostedScore = Math.min(100, current.careerReadinessScore + 18);
+
+    return {
+      originalScore: current.careerReadinessScore,
+      simulatedScore: boostedScore,
+      scoreGain: boostedScore - current.careerReadinessScore,
+      scenarioDescription: scenario || 'Added 2 key skills and completed 1 capstone project.',
+      unlockedRoles: ['Senior Software Engineer', 'Full Stack Tech Lead'],
+    };
+  },
+
+  // 19. Student 360
+  getStudent360: (studentProfile: any) => {
+    const readiness = nativeAIEngine.getCareerReadiness(studentProfile);
+    return {
+      profileOverview: {
+        cgpa: studentProfile.cgpa || 0,
+        skillCount: (studentProfile.skills || []).length,
+        projectCount: (studentProfile.projects || []).length,
+        certCount: (studentProfile.certificates || []).length,
+      },
+      capabilityRadar: {
+        technical: readiness.subScores.technicalSkills,
+        academic: readiness.subScores.academicPerformance,
+        project: readiness.subScores.projectExperience,
+        exposure: readiness.subScores.industryExposure,
+      },
+      readinessLevel: readiness.readinessLevel,
+    };
+  },
+
+  // 20. AI Action Center & Assistant
+  getActionCenter: (studentProfile: any) => {
+    return {
+      highPriorityTasks: [
+        { id: 1, title: 'Verify missing Data Structures skill badge', points: '+15 Readiness' },
+        { id: 2, title: 'Upload latest PDF resume for ATS Optimization', points: '+10 Readiness' },
+        { id: 3, title: 'Conduct 1 technical AI Mock Interview', points: '+20 Readiness' },
+      ],
+      completedTasksCount: 4,
+    };
+  },
+
+  chatWithCareerAssistant: (message: string, history: any[] = []) => {
+    const msg = message.toLowerCase();
+    let reply = `That's a great career question! To excel in software engineering, focus on building strong data structures foundations, mastering clean REST APIs, and maintaining a clean project portfolio on GitHub. How can I assist you further?`;
+
+    if (msg.includes('java')) {
+      reply = `Java is a top choice for enterprise backends and distributed systems! Focus on mastering OOP, Java Collections Framework (HashMap vs ConcurrentHashMap), Multithreading, and Spring Boot framework.`;
+    } else if (msg.includes('python')) {
+      reply = `Python is dominant in Web Backend (Django/FastAPI), Data Science, and Machine Learning! Focus on memory management, list comprehensions, decorators, and asynchronous frameworks.`;
+    } else if (msg.includes('resume')) {
+      reply = `To optimize your resume for ATS parsers: 1. Use clean standard headers. 2. Include exact skill keywords. 3. Quantify project achievements with metrics!`;
+    } else if (msg.includes('interview')) {
+      reply = `For technical mock interviews: practice explaining your thought process out loud, use the STAR framework for behavioral prompts, and review time/space complexities!`;
+    }
+
+    return {
+      reply,
+      timestamp: new Date().toISOString(),
     };
   },
 };

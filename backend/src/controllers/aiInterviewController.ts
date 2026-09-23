@@ -5,6 +5,7 @@ import { Student } from '../models/Student';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
+import { nativeAIEngine } from '../services/aiEngine';
 
 const getAiServiceUrl = () => {
   if (process.env.AI_SERVICE_URL) return process.env.AI_SERVICE_URL;
@@ -43,17 +44,24 @@ export const startMockInterviewSession = async (req: AuthenticatedRequest, res: 
   } = req.body;
 
   let aiResp;
-  try {
-    const aiServiceRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/start`, {
-      role,
-      skill,
-      difficulty,
-      questionCount: Number(questionCount),
-      interviewType,
-      studentProfile: profilePayload,
-    });
-    aiResp = aiServiceRes.data;
-  } catch (err: any) {
+  if (process.env.AI_SERVICE_URL && !process.env.VERCEL && process.env.AI_SERVICE_URL !== 'http://localhost:8000') {
+    try {
+      const aiServiceRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/start`, {
+        role,
+        skill,
+        difficulty,
+        questionCount: Number(questionCount),
+        interviewType,
+        studentProfile: profilePayload,
+      }, { timeout: 800 });
+      aiResp = aiServiceRes.data;
+    } catch (err: any) {
+      console.warn('[AI_INTERVIEW_FALLBACK] Using native interview engine.');
+    }
+  }
+
+  if (!aiResp) {
+    const sessionData = nativeAIEngine.startInterviewSession({ role, skill, difficulty, interviewType });
     aiResp = {
       success: true,
       role,
@@ -61,7 +69,7 @@ export const startMockInterviewSession = async (req: AuthenticatedRequest, res: 
       difficulty,
       interviewType,
       questions: [
-        { id: 1, question: `Can you explain the core concepts and architecture of ${skill}?`, skill, difficulty, expectedKeywords: [skill.toLowerCase(), 'architecture', 'concepts'] },
+        { id: 1, question: sessionData.firstQuestion.questionText, skill, difficulty, expectedKeywords: sessionData.firstQuestion.expectedKeywords },
         { id: 2, question: `How do you handle memory management and optimization in ${skill}?`, skill, difficulty, expectedKeywords: ['memory', 'optimization', 'performance'] },
         { id: 3, question: `Describe a challenging bug you encountered in a ${skill} project and how you resolved it.`, skill, difficulty, expectedKeywords: ['debug', 'project', 'solution'] },
       ],
@@ -147,30 +155,37 @@ export const evaluateMockInterviewAnswer = async (req: AuthenticatedRequest, res
   currentQ.timeSpentSeconds = Number(timeSpentSeconds || 30);
 
   let evalResp;
-  try {
-    const evalRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/evaluate-answer`, {
-      question: currentQ.question,
-      answer: currentQ.studentAnswer,
-      skill: session.skill,
-      difficulty: session.difficulty,
-      interviewType: session.interviewType,
-      expectedKeywords: currentQ.expectedKeywords || [],
-      timeSpentSeconds: currentQ.timeSpentSeconds,
-      answerMethod,
-    });
-    evalResp = evalRes.data;
-  } catch (err) {
+  if (process.env.AI_SERVICE_URL && !process.env.VERCEL && process.env.AI_SERVICE_URL !== 'http://localhost:8000') {
+    try {
+      const evalRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/evaluate-answer`, {
+        question: currentQ.question,
+        answer: currentQ.studentAnswer,
+        skill: session.skill,
+        difficulty: session.difficulty,
+        interviewType: session.interviewType,
+        expectedKeywords: currentQ.expectedKeywords || [],
+        timeSpentSeconds: currentQ.timeSpentSeconds,
+        answerMethod,
+      }, { timeout: 800 });
+      evalResp = evalRes.data;
+    } catch (err) {
+      console.warn('[AI_EVALUATION_FALLBACK] Using native evaluation engine.');
+    }
+  }
+
+  if (!evalResp) {
+    const nativeEval = nativeAIEngine.evaluateAnswer({ answerText: currentQ.studentAnswer, questionText: currentQ.question });
     evalResp = {
-      score: 75,
-      technicalScore: 75,
-      communicationScore: 80,
-      problemSolvingScore: 70,
-      relevanceScore: 75,
-      feedback: 'Answer submitted and logged successfully.',
-      whatYouDidWell: 'Addressed the core interview prompt.',
-      whatYouMissed: `Consider elaborating on advanced ${session.skill} patterns.`,
-      howToImprove: 'Use concrete code examples and performance benchmarks.',
-      betterAnswerStructure: '1. Definition → 2. Key features → 3. Production use-case.',
+      score: nativeEval.scores.overallScore,
+      technicalScore: nativeEval.scores.technicalAccuracy,
+      communicationScore: nativeEval.scores.clarity,
+      problemSolvingScore: nativeEval.scores.completeness,
+      relevanceScore: nativeEval.scores.relevance,
+      feedback: 'Answer evaluated successfully.',
+      whatYouDidWell: nativeEval.strengths[0] || 'Good technical vocabulary.',
+      whatYouMissed: nativeEval.missedPoints[0] || 'Include more specific project examples.',
+      howToImprove: nativeEval.improvementSuggestions[0] || 'Structure responses with STAR format.',
+      betterAnswerStructure: '1. Core Definition → 2. Technical Mechanism → 3. Real-world Project Application.',
       fillerWordsDetected: [],
       speakingPace: 'Optimal',
     };
@@ -251,32 +266,40 @@ export const finishMockInterviewSession = async (req: AuthenticatedRequest, res:
   const previousAvg = previousSession ? previousSession.overallScore : 0;
 
   let reportResp;
-  try {
-    const reportRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/final-report`, {
-      role: session.role,
-      skill: session.skill,
-      difficulty: session.difficulty,
-      questions: session.questions,
-      integrityEvents: session.integrityEvents,
-      previousAverageScore: previousAvg,
-    });
-    reportResp = reportRes.data;
-  } catch (err) {
+  if (process.env.AI_SERVICE_URL && !process.env.VERCEL && process.env.AI_SERVICE_URL !== 'http://localhost:8000') {
+    try {
+      const reportRes = await axios.post(`${AI_SERVICE_URL}/interview/v2/final-report`, {
+        role: session.role,
+        skill: session.skill,
+        difficulty: session.difficulty,
+        questions: session.questions,
+        integrityEvents: session.integrityEvents,
+        previousAverageScore: previousAvg,
+      }, { timeout: 800 });
+      reportResp = reportRes.data;
+    } catch (err) {
+      console.warn('[AI_REPORT_FALLBACK] Using native report engine.');
+    }
+  }
+
+  if (!reportResp) {
     const evaluated = session.questions.filter((q) => q.score !== undefined);
     const avgScore = evaluated.length
       ? Math.round(evaluated.reduce((acc, q) => acc + (q.score || 0), 0) / evaluated.length)
-      : 75;
+      : 84;
+    const nativeReport = nativeAIEngine.getFinalReport({ integrityEventsCount: session.integrityEvents.length });
+
     reportResp = {
       overallScore: avgScore,
-      technicalScore: avgScore,
-      communicationScore: Math.min(100, avgScore + 5),
-      problemSolvingScore: Math.max(50, avgScore - 5),
-      answerQualityScore: avgScore,
+      technicalScore: nativeReport.scores.technicalAccuracy,
+      communicationScore: nativeReport.scores.communication,
+      problemSolvingScore: nativeReport.scores.problemSolving,
+      answerQualityScore: nativeReport.scores.answerQuality,
       scoreDelta: previousAvg ? avgScore - previousAvg : 0,
       integrityEventCount: session.integrityEvents.length,
-      strengths: [`Good knowledge of ${session.skill} concepts`, 'Articulated key answers clearly'],
-      needsImprovement: ['Practice complex edge-cases under timer constraints'],
-      recommendedPractice: [`Study advanced ${session.skill} topics`, 'Record practice responses'],
+      strengths: nativeReport.strongTopics.map((t) => `Good understanding of ${t}`),
+      needsImprovement: nativeReport.needsImprovementTopics.map((t) => `Needs more practice in ${t}`),
+      recommendedPractice: nativeReport.recommendations,
       summary: `Completed interview for ${session.role} (${session.skill}) with overall score ${avgScore}/100.`,
     };
   }
