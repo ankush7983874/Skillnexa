@@ -9,5 +9,5 @@
     "resolveJsonModule": true,
     "strict": false
   },
-  "include": ["api/**/*", "backend/src/**/*"]
+  "include": ["api/**/*", "backend/**/*"]
 }
