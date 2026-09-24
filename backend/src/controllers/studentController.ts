@@ -84,7 +84,7 @@ export const addProject = async (req: AuthenticatedRequest, res: Response) => {
     throw ApiError.notFound('Student profile not found');
   }
 
-  student.projects.push(validated);
+  student.projects.push(validated as any);
   student.profileCompletionPercentage = student.calculateCompletionPercentage();
   await student.save();
 
@@ -122,7 +122,7 @@ export const addInternship = async (req: AuthenticatedRequest, res: Response) =>
     throw ApiError.notFound('Student profile not found');
   }
 
-  student.internships.push(validated);
+  student.internships.push(validated as any);
   student.profileCompletionPercentage = student.calculateCompletionPercentage();
   await student.save();
 

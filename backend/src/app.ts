@@ -28,39 +28,84 @@ dotenv.config();
 
 const app: Application = express();
 
-// Security & Middleware
+// Security & Middleware - Universal CORS for Vercel, Preview URLs and Localhost
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: true,
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
 }));
+app.options('*', cors());
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
+// Health Check (Root & API)
+app.get('/health', (req, res) => res.status(200).json({ status: 'OK', message: 'SkillNexa API is running' }));
 app.use('/api/health', healthRoutes);
+app.use('/health', healthRoutes);
+
+// Core Authentication & Security
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
+// Platform & AI Routes (Dual mounted for serverless resilience)
 app.use('/api/students', studentRoutes);
+app.use('/students', studentRoutes);
+
 app.use('/api/skills', skillRoutes);
+app.use('/skills', skillRoutes);
+
 app.use('/api/assessments', assessmentRoutes);
+app.use('/assessments', assessmentRoutes);
+
 app.use('/api/companies', companyRoutes);
 app.use('/api/company', companyRoutes);
+app.use('/companies', companyRoutes);
+app.use('/company', companyRoutes);
 
-app.use('/api', jobRoutes); // /api/jobs and /api/internships
+app.use('/api', jobRoutes);
+app.use('/', jobRoutes);
+
 app.use('/api/ai', aiRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/interviews', interviewRoutes);
-app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/ai', aiRoutes);
 
-// Phase 11 Routes
+app.use('/api/applications', applicationRoutes);
+app.use('/applications', applicationRoutes);
+
+app.use('/api/interviews', interviewRoutes);
+app.use('/interviews', interviewRoutes);
+
+app.use('/api/portfolio', portfolioRoutes);
+app.use('/portfolio', portfolioRoutes);
+
+app.use('/api/notifications', notificationRoutes);
+app.use('/notifications', notificationRoutes);
+
+// Institutional & Extended Features
 app.use('/api/faculty', facultyRoutes);
+app.use('/faculty', facultyRoutes);
+
 app.use('/api/collaborations', collaborationRoutes);
+app.use('/collaborations', collaborationRoutes);
+
 app.use('/api/documents', documentRoutes);
+app.use('/documents', documentRoutes);
+
 app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
+
 app.use('/api/placements', placementRoutes);
+app.use('/placements', placementRoutes);
+
 app.use('/api/analytics', analyticsRoutes);
+app.use('/analytics', analyticsRoutes);
+
 app.use('/api/search', searchRoutes);
+app.use('/search', searchRoutes);
+
 app.use('/api/reports', reportRoutes);
+app.use('/reports', reportRoutes);
 
 // Static files
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
